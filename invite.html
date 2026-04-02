@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>You're Invited — Populr Events</title>
+  <meta name="description" content="You've been invited to an event on Populr Events"/>
+  <meta property="og:title" content="You're Invited — Populr Events"/>
+  <meta property="og:description" content="You've been invited to an event on Populr Events"/>
+  <meta property="og:type" content="website"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <link rel="icon" type="image/png" href="/lifemark.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --grad-start: #3B1FA0;
+      --grad-mid: #8B35C8;
+      --grad-end: #F05A28;
+      --bg-dark: #0A0012;
+      --text-primary: #FFFFFF;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-dim: rgba(255,255,255,0.5);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--bg-dark);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Full-screen container ── */
+    .invite-container {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
+    }
+
+    /* ── Cover image (Ken Burns) ── */
+    .cover {
+      position: absolute; inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transform: scale(1.18);
+      will-change: transform, opacity;
+    }
+    .cover.animate {
+      animation: coverReveal 1.2s 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    @keyframes coverReveal {
+      0%   { opacity: 0; transform: scale(1.18); }
+      100% { opacity: 1; transform: scale(1.04); }
+    }
+
+    /* ── Gradient fallback (no cover image) ── */
+    .cover-gradient {
+      background: linear-gradient(135deg, var(--grad-start) 0%, var(--grad-mid) 50%, var(--grad-end) 100%);
+      opacity: 1; transform: scale(1);
+    }
+
+    /* ── Gradient scrim over cover ── */
+    .scrim {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(10,0,18,0.0) 0%,
+        rgba(10,0,18,0.15) 40%,
+        rgba(10,0,18,0.75) 70%,
+        rgba(10,0,18,0.97) 100%
+      );
+      z-index: 1;
+    }
+
+    /* ── Glow ring ── */
+    .glow-ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 280px; height: 280px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139,53,200,0.6) 0%, rgba(59,31,160,0.3) 40%, transparent 70%);
+      opacity: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .glow-ring.animate {
+      animation: glowPulse 1.5s 0.5s ease-out forwards;
+    }
+    @keyframes glowPulse {
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      40%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.8); }
+    }
+
+    /* ── Particle burst ── */
+    .particles {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 0; height: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .particle {
+      position: absolute;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      opacity: 0;
+    }
+    .particle.petal-shape {
+      border-radius: 50% 0 50% 0;
+      width: 8px; height: 12px;
+    }
+    .particle.animate {
+      animation: particleBurst 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    @keyframes particleBurst {
+      0%   { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+      50%  { opacity: 0.9; }
+      100% { opacity: 0; transform: var(--end-pos) scale(0.2) rotate(var(--spin, 0deg)); }
+    }
+
+    /* ── Bloom Flower ── */
+    .lifemark-wrap {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 4;
+      pointer-events: none;
+    }
+    .lifemark {
+      width: 150px; height: 150px;
+      opacity: 0;
+      transform: scale(0) rotate(-60deg);
+      filter: drop-shadow(0 0 32px rgba(139,53,200,0.9)) drop-shadow(0 0 64px rgba(240,90,40,0.5));
+    }
+    .lifemark.animate {
+      animation: bloomFull 3.5s 0.5s ease-out forwards;
+    }
+    @keyframes bloomFull {
+      0%   { opacity: 0; transform: scale(0) rotate(0deg); }
+      10%  { opacity: 1; }
+      55%  { opacity: 1; transform: scale(1) rotate(360deg); animation-timing-function: cubic-bezier(0, .8, .6, 1); }
+      100% { opacity: 0; transform: scale(2.6) rotate(420deg); }
+    }
+
+    /* ── Content area ── */
+    .content {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      max-width: 420px;
+      padding: 0 24px 48px;
+      display: flex; flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ── Logo ── */
+    .logo-wrap {
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2px;
+    }
+    .logo-wrap.animate {
+      animation: fadeIn 0.5s 3.4s ease-out forwards;
+    }
+    .logo-wrap img {
+      height: 30px;
+      width: auto;
+      opacity: 0.75;
+    }
+
+    /* ── From tag ── */
+    .from-tag {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 400;
+      color: var(--text-secondary);
+      opacity: 0; transform: translateY(20px);
+    }
+    .from-tag.animate {
+      animation: slideUp 0.6s 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    /* ── Event title ── */
+    .event-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+      line-height: 1.15;
+      text-align: center;
+      opacity: 0; transform: translateY(20px);
+      position: relative;
+      overflow: hidden;
+    }
+    .event-title.animate {
+      animation: slideUp 0.65s 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    .event-title::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    .event-title.shimmer::after {
+      animation: shimmerSweep 0.8s 3.4s ease-out forwards;
+    }
+    @keyframes shimmerSweep {
+      0%   { opacity: 1; transform: translateX(-100%); }
+      100% { opacity: 0; transform: translateX(100%); }
+    }
+
+    /* ── Meta row ── */
+    .meta-row {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      font-size: 14px; font-weight: 400;
+      color: var(--text-secondary);
+      opacity: 0; transform: translateY(20px);
+    }
+    .meta-row.animate {
+      animation: slideUp 0.6s 3.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    .meta-item {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .meta-icon {
+      width: 16px; height: 16px; opacity: 0.6;
+    }
+
+    /* ── RSVP buttons ── */
+    .rsvp-row {
+      display: flex; gap: 12px; width: 100%;
+      margin-top: 8px;
+      opacity: 0; transform: translateY(20px);
+    }
+    .rsvp-row.animate {
+      animation: slideUp 0.6s 3.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    .btn-rsvp {
+      flex: 1;
+      padding: 16px 24px;
+      border: none; border-radius: 16px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700; font-size: 16px;
+      color: #fff; cursor: pointer;
+      background: linear-gradient(135deg, var(--grad-start) 0%, var(--grad-mid) 50%, var(--grad-end) 100%);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      text-decoration: none;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-rsvp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(139,53,200,0.4);
+    }
+    .btn-rsvp:active { transform: scale(0.97); }
+    .btn-share {
+      width: 54px; height: 54px;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.08);
+      cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: background 0.15s ease;
+      flex-shrink: 0;
+    }
+    .btn-share:hover { background: rgba(255,255,255,0.15); }
+    .btn-share svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; top: 40px; left: 50%; transform: translateX(-50%) translateY(-80px);
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 12px 24px; border-radius: 30px;
+      font-size: 14px; font-weight: 500;
+      color: #fff; z-index: 100;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── Error state ── */
+    .error-state {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 32px; text-align: center;
+      background: linear-gradient(135deg, var(--grad-start) 0%, var(--grad-mid) 60%, var(--grad-end) 100%);
+    }
+    .error-state h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800; font-size: 24px;
+      margin-bottom: 12px;
+    }
+    .error-state p {
+      font-size: 15px; color: var(--text-secondary);
+      margin-bottom: 24px; max-width: 300px;
+    }
+    .error-state a {
+      color: #fff; text-decoration: none;
+      font-weight: 600; font-size: 15px;
+      padding: 14px 32px; border-radius: 14px;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      transition: background 0.15s;
+    }
+    .error-state a:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── Loading ── */
+    .loading {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg-dark);
+    }
+    .loading-spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: var(--grad-mid);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Shared keyframes ── */
+    @keyframes fadeIn {
+      0%   { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    @keyframes slideUp {
+      0%   { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Safe area for notched phones ── */
+    @supports (padding-bottom: env(safe-area-inset-bottom)) {
+      .content { padding-bottom: calc(48px + env(safe-area-inset-bottom)); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading state -->
+  <div class="loading" id="loading">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Error state (hidden by default) -->
+  <div class="error-state" id="error" style="display:none;">
+    <img src="/lifemark.png" alt="Populr" width="56" height="56" style="margin-bottom:20px; opacity:0.9;"/>
+    <h2 id="error-title">This invite link isn't valid</h2>
+    <p id="error-message">The event may have been removed or the link may be incorrect.</p>
+    <a href="https://populrevents.app">Go to Populr Events</a>
+  </div>
+
+  <!-- Main invite view (hidden until data loads) -->
+  <div class="invite-container" id="invite" style="display:none;">
+    <div class="cover" id="cover"></div>
+    <div class="scrim"></div>
+    <div class="glow-ring" id="glow"></div>
+    <div class="particles" id="particles"></div>
+    <div class="lifemark-wrap">
+      <img class="lifemark" id="lifemark" src="/lifemark_white.png" alt=""/>
+    </div>
+
+    <div class="content">
+      <div class="logo-wrap" id="wordmark">
+        <img src="/logo_horizontal.png" alt="Populr"/>
+      </div>
+      <div class="from-tag" id="fromTag"></div>
+      <div class="event-title" id="eventTitle"></div>
+      <div class="meta-row" id="metaRow"></div>
+      <div class="rsvp-row" id="rsvpRow">
+        <a class="btn-rsvp" id="rsvpBtn" href="#">RSVP Now</a>
+        <button class="btn-share" id="shareBtn" aria-label="Share invite">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+            <polyline points="16 6 12 2 8 6"/>
+            <line x1="12" y1="2" x2="12" y2="15"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">Link copied!</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── Config ──
+  var SUPABASE_URL = 'https://dyypoqrykmjejrrscxft.supabase.co';
+  var SUPABASE_ANON_KEY = 'sb_publishable_LD9uGsDTsFENeO8yeISj_A_H-NmAr_H';
+
+  var loadingEl = document.getElementById('loading');
+  var errorEl   = document.getElementById('error');
+  var inviteEl  = document.getElementById('invite');
+
+  // ── Get event ID from URL ──
+  var params = new URLSearchParams(window.location.search);
+  var eventId = params.get('id');
+
+  // Also support /invite/[id] path format
+  if (!eventId) {
+    var pathMatch = window.location.pathname.match(/\/invite\/([^/?#]+)/);
+    if (pathMatch) eventId = pathMatch[1];
+  }
+
+  if (!eventId) {
+    showError('This invite link isn\u2019t valid', 'The link appears to be incomplete. Check with the person who shared it.');
+    return;
+  }
+
+  // ── Fetch event data ──
+  var hdrs = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Accept': 'application/json' };
+  var EVENT_SEL = 'id,title,cover_image,start_date,location,privacy,profiles!events_organizer_id_fkey(full_name)';
+  var isUuid = /^[0-9a-f-]{36}$/i.test(eventId);
+
+  var fetchPromise = isUuid
+    ? fetch(SUPABASE_URL + '/rest/v1/events?id=eq.' + encodeURIComponent(eventId) + '&select=' + EVENT_SEL + '&limit=1', { headers: hdrs })
+        .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+        .then(function(d) { return d && d.length ? d[0] : null; })
+    : fetch(SUPABASE_URL + '/rest/v1/invitations?invite_code=eq.' + encodeURIComponent(eventId) + '&select=event_id,events(' + EVENT_SEL + ')&limit=1', { headers: hdrs })
+        .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+        .then(function(d) {
+          if (d && d.length && d[0].events) return d[0].events;
+          // Fallback: try as event ID
+          return fetch(SUPABASE_URL + '/rest/v1/events?id=eq.' + encodeURIComponent(eventId) + '&select=' + EVENT_SEL + '&limit=1', { headers: hdrs })
+            .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+            .then(function(d2) { return d2 && d2.length ? d2[0] : null; });
+        });
+
+  fetchPromise.then(function(event) {
+    if (!event) { showError('This invite link isn\u2019t valid', 'The event may have been removed or the link may be incorrect.'); return; }
+    if (event.privacy === 'invite_only' && isUuid) { showError('This event is invite-only', 'You need an invite link to view this event.'); return; }
+    renderInvite(event);
+    // Mark as viewed (fire-and-forget)
+    if (!isUuid) {
+      fetch(SUPABASE_URL + '/rest/v1/invitations?invite_code=eq.' + encodeURIComponent(eventId), {
+        method: 'PATCH',
+        headers: Object.assign({}, hdrs, { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }),
+        body: JSON.stringify({ status: 'viewed', viewed_at: new Date().toISOString() })
+      }).catch(function() {});
+    }
+  }).catch(function() {
+    showError('Something went wrong', 'We couldn\u2019t load this invite. Please try again.');
+  });
+
+  function showError(title, message) {
+    loadingEl.style.display = 'none';
+    errorEl.style.display = 'flex';
+    document.getElementById('error-title').textContent = title;
+    document.getElementById('error-message').textContent = message;
+  }
+
+  function renderInvite(event) {
+    loadingEl.style.display = 'none';
+    inviteEl.style.display = 'flex';
+
+    // ── Update OG tags dynamically ──
+    document.title = (event.title || 'Event') + ' — Populr Events';
+
+    // ── Cover image ──
+    var coverEl = document.getElementById('cover');
+    if (event.cover_image) {
+      // Apply Cloudinary transforms if it's a Cloudinary URL
+      var imgUrl = event.cover_image;
+      if (imgUrl.indexOf('cloudinary.com') !== -1 && imgUrl.indexOf('/upload/') !== -1) {
+        imgUrl = imgUrl.replace('/upload/', '/upload/q_auto,f_auto,w_800/');
+      }
+      coverEl.style.backgroundImage = 'url(' + imgUrl + ')';
+    } else {
+      coverEl.classList.add('cover-gradient');
+    }
+
+    // ── Organizer info ──
+    var profile = event.profiles;
+    var hostName = (profile && profile.full_name) ? profile.full_name : 'Someone';
+    document.getElementById('fromTag').innerHTML =
+      '<span style="font-weight:300; color: var(--text-dim)">from</span> ' +
+      '<span style="font-weight:500;">' + escapeHtml(hostName) + '</span>';
+
+    // ── Event title ──
+    document.getElementById('eventTitle').textContent = event.title || 'Untitled Event';
+
+    // ── Meta row ──
+    var metaHtml = '';
+    if (event.start_date) {
+      var d = new Date(event.start_date);
+      var dateStr = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      var timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      metaHtml += '<div class="meta-item">' +
+        '<svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' +
+        '<span>' + dateStr + ' &middot; ' + timeStr + '</span></div>';
+    }
+    if (event.location) {
+      metaHtml += '<div class="meta-item">' +
+        '<svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+        '<span>' + escapeHtml(event.location) + '</span></div>';
+    }
+    document.getElementById('metaRow').innerHTML = metaHtml;
+
+    // ── RSVP button ──
+    var rsvpBtn = document.getElementById('rsvpBtn');
+    rsvpBtn.href = 'https://populrevents.app/e/' + event.id;
+
+    // ── Share button ──
+    document.getElementById('shareBtn').addEventListener('click', function() {
+      var inviteUrl = window.location.href;
+      if (navigator.share) {
+        navigator.share({ title: event.title, url: inviteUrl }).catch(function(){});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(inviteUrl).then(function() {
+          showToast();
+        });
+      }
+    });
+
+    // ── Start animation ──
+    requestAnimationFrame(function() {
+      startAnimation();
+    });
+  }
+
+  function startAnimation() {
+    // Phase 1: Cover reveal
+    var cover = document.getElementById('cover');
+    cover.classList.add('animate');
+
+    // Phase 2: Glow ring
+    document.getElementById('glow').classList.add('animate');
+
+    // Phase 3: Particles
+    createParticles();
+
+    // Phase 4: Lifemark in + out
+    document.getElementById('lifemark').classList.add('animate');
+
+    // Phase 5+: Content
+    document.getElementById('wordmark').classList.add('animate');
+    document.getElementById('fromTag').classList.add('animate');
+
+    var title = document.getElementById('eventTitle');
+    title.classList.add('animate');
+    title.classList.add('shimmer');
+
+    document.getElementById('metaRow').classList.add('animate');
+    document.getElementById('rsvpRow').classList.add('animate');
+  }
+
+  function createParticles() {
+    var container = document.getElementById('particles');
+    var colors = ['#3B1FA0', '#8B35C8', '#F05A28', '#C0397A', '#FFFFFF', '#6B35C8', '#D4A0FF', '#FF8A5C'];
+    var count = 36;
+
+    for (var i = 0; i < count; i++) {
+      var dot = document.createElement('div');
+      var isPetal = i % 3 === 0; // Every 3rd particle is petal-shaped
+      dot.className = 'particle' + (isPetal ? ' petal-shape' : '');
+      var angle = (i / count) * 360 + (Math.random() * 15 - 7.5);
+      var dist = 60 + Math.random() * 160;
+      var x = Math.cos(angle * Math.PI / 180) * dist;
+      var y = Math.sin(angle * Math.PI / 180) * dist;
+      dot.style.setProperty('--end-pos', 'translate(' + x + 'px, ' + y + 'px)');
+      dot.style.setProperty('--spin', (Math.random() * 360 - 180) + 'deg');
+      dot.style.backgroundColor = colors[i % colors.length];
+      if (isPetal) {
+        dot.style.width = (6 + Math.random() * 6) + 'px';
+        dot.style.height = (10 + Math.random() * 6) + 'px';
+      } else {
+        var size = (3 + Math.random() * 5) + 'px';
+        dot.style.width = size;
+        dot.style.height = size;
+      }
+      dot.style.animationDelay = (0.5 + Math.random() * 1.0) + 's';
+      container.appendChild(dot);
+
+      // Trigger animation
+      requestAnimationFrame(function() {
+        dot.classList.add('animate');
+      });
+    }
+  }
+
+  function showToast() {
+    var toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 2000);
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+})();
+</script>
+</body>
+</html>
