@@ -953,7 +953,6 @@
   // CONFIGURATION — Replace these with your actual Supabase values
   // ===========================================================================
   const SUPABASE_URL = 'https://dyypoqrykmjejrrscxft.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_LD9uGsDTsFENeO8yeISj_A_H-NmAr_H';
 
   // ===========================================================================
   // SPA ROUTING
@@ -1081,22 +1080,17 @@
   }
 
   // ===========================================================================
-  // SUPABASE SUBMIT HELPER
+  // SUBMIT VIA EDGE FUNCTION (replaces direct REST insert)
   // ===========================================================================
   async function supabaseInsert(table, data) {
-    const res = await fetch(SUPABASE_URL + '/rest/v1/' + table, {
+    const res = await fetch(SUPABASE_URL + '/functions/v1/submit-support-ticket', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Prefer': 'return=representation'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || 'Failed to submit');
+      throw new Error(err.error || 'Failed to submit');
     }
     return res.json();
   }
