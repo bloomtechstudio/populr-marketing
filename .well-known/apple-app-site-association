@@ -1,0 +1,11 @@
+  {
+     "applinks": {
+       "apps": [],
+       "details": [
+         {
+           "appID": "NLUZCK7NVU.com.bloomtechstudio.populr",
+           "paths": ["/invite/*", "/event/*", "/e/*"]
+         }
+       ]
+     }
+   }
