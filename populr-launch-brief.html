@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Populr — Product Deep Dive &amp; Launch Brief</title>
+<style>
+  :root {
+    --bg: #0B0614;
+    --bg-2: #140B25;
+    --surface: #1C1430;
+    --surface-2: #261A3F;
+    --border: #2E2345;
+    --text: #F5F1FF;
+    --text-dim: #B8AFD0;
+    --text-muted: #8A7FA8;
+    --grad-1: #3B1FA0;
+    --grad-2: #8B35C8;
+    --grad-3: #F05A28;
+    --accent: #8B35C8;
+    --success: #22C55E;
+    --warning: #F59E0B;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 64px 32px 120px;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 64px 48px;
+    border-radius: 32px;
+    background:
+      radial-gradient(1200px 600px at 10% 0%, rgba(139,53,200,0.45), transparent 60%),
+      radial-gradient(800px 400px at 90% 100%, rgba(240,90,40,0.35), transparent 55%),
+      linear-gradient(135deg, #1A0E3A 0%, #3B1FA0 55%, #8B35C8 100%);
+    margin-bottom: 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero .eyebrow {
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0.8;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-size: 56px;
+    line-height: 1.05;
+    margin: 0 0 20px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .hero .lede {
+    font-size: 20px;
+    line-height: 1.5;
+    opacity: 0.9;
+    max-width: 720px;
+    margin: 0 0 32px;
+  }
+  .hero .meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    opacity: 0.75;
+  }
+  .hero .meta b { color: #fff; opacity: 1; font-weight: 700; }
+
+  /* Section headers */
+  h2 {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 72px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  h2 .num {
+    display: inline-block;
+    margin-right: 16px;
+    background: linear-gradient(135deg, var(--grad-1), var(--grad-3));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 900;
+    font-size: 24px;
+    vertical-align: 8px;
+  }
+  h3 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 32px 0 10px;
+    letter-spacing: -0.01em;
+  }
+  h4 {
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin: 24px 0 8px;
+  }
+  p, li { color: var(--text-dim); }
+  strong { color: var(--text); }
+  a { color: #C9A7FF; }
+
+  /* Pitch cards */
+  .pitch-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 32px 0;
+  }
+  .pitch-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+  }
+  .pitch-card .label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .pitch-card p { margin: 0; font-size: 15px; }
+
+  /* Feature showcase */
+  .showcase {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 48px;
+    align-items: start;
+    margin: 48px 0;
+    padding: 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+  }
+  .showcase .screen {
+    position: relative;
+  }
+  .showcase .screen img {
+    width: 100%;
+    border-radius: 24px;
+    display: block;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  }
+  .showcase .tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(90deg, var(--grad-1), var(--grad-3));
+    padding: 6px 12px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+  .showcase h3 { margin-top: 0; }
+  .showcase .tagline {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin: 0 0 20px;
+  }
+  .showcase ul { padding-left: 20px; }
+  .showcase li { margin-bottom: 8px; }
+
+  .hooks {
+    background: linear-gradient(135deg, rgba(59,31,160,0.25), rgba(240,90,40,0.15));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-top: 20px;
+  }
+  .hooks h4 { color: #D4B8FF; margin-top: 0; }
+  .hooks ul { margin: 0; }
+
+  /* Competitor table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 24px 0;
+  }
+  th, td {
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: var(--surface-2);
+    color: var(--text);
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  tr:last-child td { border-bottom: none; }
+  td.yes { color: var(--success); font-weight: 700; }
+  td.no { color: #7A6D90; }
+  td.partial { color: var(--warning); font-weight: 700; }
+  td.brand { color: var(--text); font-weight: 700; }
+
+  /* Two-column blocks */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 24px 0;
+  }
+  .block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .block h4 {
+    margin-top: 0;
+    color: #D4B8FF;
+  }
+
+  /* Stat row */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .stat {
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+  }
+  .stat .num {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--grad-2), var(--grad-3));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: block;
+    line-height: 1.1;
+  }
+  .stat .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* Discussion prompts */
+  .prompts {
+    background: linear-gradient(135deg, rgba(59,31,160,0.2), rgba(240,90,40,0.1));
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+  }
+  .prompts ol { padding-left: 24px; }
+  .prompts li {
+    margin-bottom: 14px;
+    font-size: 15px;
+    color: var(--text);
+  }
+  .prompts li span {
+    color: var(--text-dim);
+    display: block;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  /* Sound bites */
+  .bites {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .bite {
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+    position: relative;
+  }
+  .bite::before {
+    content: "\201C";
+    position: absolute;
+    top: 0;
+    left: 12px;
+    font-size: 60px;
+    color: var(--accent);
+    opacity: 0.3;
+    line-height: 1;
+  }
+  .bite .attr {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Roadmap */
+  .roadmap {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .roadmap .col {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .roadmap .col h4 { margin-top: 0; }
+  .roadmap .col.now h4 { color: var(--success); }
+  .roadmap .col.next h4 { color: var(--warning); }
+  .roadmap .col.later h4 { color: #C9A7FF; }
+  .roadmap ul { padding-left: 18px; margin-bottom: 0; }
+  .roadmap li { font-size: 14px; margin-bottom: 6px; }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    padding: 4px 0 4px 16px;
+    margin: 20px 0;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* Print */
+  @media print {
+    body { background: white; color: #111; }
+    .wrap { padding: 24px; max-width: none; }
+    .hero { background: #3B1FA0 !important; color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .showcase, .block, .stat, table, .pitch-card, .bite, .prompts, .roadmap .col {
+      background: white !important;
+      border: 1px solid #ddd !important;
+      color: #111 !important;
+      break-inside: avoid;
+    }
+    p, li { color: #333; }
+    h2, h3, strong { color: #111; }
+  }
+
+  @media (max-width: 900px) {
+    .showcase { grid-template-columns: 1fr; }
+    .pitch-row, .two-col, .bites, .roadmap { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .hero h1 { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- =============== HERO =============== -->
+<section class="hero">
+  <div class="eyebrow">Populr — Internal Launch Brief · v1</div>
+  <h1>The social layer<br/>for real life.</h1>
+  <p class="lede">
+    Populr is a single iOS + Web app that turns every kind of gathering — a backyard cookout,
+    a neighborhood parade, a recurring yoga class, a sold-out concert — into something people
+    actually remember. It's an invitation platform, a group memory, and a discovery feed,
+    stitched together.
+  </p>
+  <div class="meta">
+    <span><b>Platforms:</b> iOS · Web (Android port: next)</span>
+    <span><b>Stack:</b> Expo · Supabase · Cloudflare</span>
+    <span><b>Status:</b> Feature-complete for v1 launch; App Store submission in progress</span>
+    <span><b>Working title:</b> populrevents.app</span>
+  </div>
+</section>
+
+<!-- =============== WHAT IS POPULR =============== -->
+<section>
+  <h2><span class="num">01</span>What Populr actually is</h2>
+
+  <p>
+    Most event apps pick one lane: <em>invitations</em> (Paperless Post, Partiful), <em>ticketing</em>
+    (Eventbrite, Dice), or <em>local discovery</em> (Meetup, Facebook Events). Populr collapses all
+    three into a single dark-mode, TikTok-feeling experience — and adds a fourth thing no one has nailed yet:
+    <strong>the post-event memory.</strong>
+  </p>
+
+  <div class="pitch-row">
+    <div class="pitch-card">
+      <div class="label">Before the event</div>
+      <p>Create an event in 3 steps. Invite by link, SMS, or email. Guests RSVP with one tap — no account required. Discover what's happening around you, filtered by interests.</p>
+    </div>
+    <div class="pitch-card">
+      <div class="label">During the event</div>
+      <p>Live group chat. Host announcements. Potluck / "who's bringing what." A camera FAB that captures <strong>Moments</strong> — auto-moderated photos and videos that build a shared feed in real time.</p>
+    </div>
+    <div class="pitch-card">
+      <div class="label">After the event</div>
+      <p>The Moments strip becomes a keepsake. Like, react, rewatch. Your calendar syncs backward to show every event you've been part of. Recurring events build continuity across weeks and months.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    The hook for every marketing conversation: <strong>Populr is the only app that stays
+    useful the morning after.</strong>
+  </div>
+
+  <h3>Who it's for</h3>
+  <ul>
+    <li><strong>Primary:</strong> 22–45 social organizers — the friend who's always hosting, the parent running the birthday, the community lead running the block party or yoga class.</li>
+    <li><strong>Secondary:</strong> Event discoverers — people who moved to a new city, people looking for weekend plans, people who follow a local venue or band.</li>
+    <li><strong>Tertiary (later):</strong> Small-business hosts — studios, chefs, tour guides who repeatedly host ticketed or semi-public events and need a lightweight CRM for their regulars.</li>
+  </ul>
+</section>
+
+<!-- =============== FEATURE WALKTHROUGH =============== -->
+<section>
+  <h2><span class="num">02</span>The product, screen by screen</h2>
+  <p>
+    These are the six screens marketing will lead with in the App Store. Each one carries a
+    headline tagline and a set of feature depth beneath the surface. Use the hooks under each
+    screen as starting points for copy, social cuts, and press pitch angles.
+  </p>
+
+  <!-- Screen 1: Event detail / Home -->
+  <div class="showcase">
+    <div class="screen">
+      <img src="../appstore/01_home.png" alt="Event detail screen with live Moments strip and FAB rail" />
+    </div>
+    <div>
+      <span class="tag">Event Detail · The hero screen</span>
+      <p class="tagline">"Your event. Your vibe."</p>
+      <p>
+        Full-bleed cover photo, event meta collapsed into a clean stack, a right-side FAB rail
+        (chat, menu, camera with review badge, follow, heart, guest count), and the <strong>Moments strip</strong>
+        peeking up from below — shared photos &amp; videos from the gathering, live.
+      </p>
+      <h4>Feature depth</h4>
+      <ul>
+        <li><strong>Single-source guest count circle</strong> — green (going) / yellow (maybe) / blue (no RSVPs yet). Organizer tension in one glance.</li>
+        <li><strong>RSVP pill dropdown</strong> in the meta row — Going / Maybe / Can't make it, live-updated across all attendees.</li>
+        <li><strong>Realtime group chat</strong> (Supabase Realtime) — threaded, persistent, tied to the event, not a separate DM surface.</li>
+        <li><strong>Host Updates</strong> — broadcast announcements appear as stacked cards over the hero, disappear after read.</li>
+        <li><strong>Moderator Protections</strong> — every uploaded Moment runs through Cloudinary AI Vision (NSFW, violence, weapons). Host sees a review badge on the camera FAB when items need approval.</li>
+      </ul>
+      <div class="hooks">
+        <h4>Marketing hooks</h4>
+        <ul>
+          <li>"Your party has a URL now." (Share sheet demo.)</li>
+          <li>"The only event app where guests actually want to show up early." (Moments strip teases energy.)</li>
+          <li>"Not a group chat. Not an invite. Both, plus what happens next."</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2: Home Feed -->
+  <div class="showcase">
+    <div class="screen">
+      <img src="../appstore/02_event.png" alt="Home feed showing upcoming events with filter chips and RSVP badges" />
+    </div>
+    <div>
+      <span class="tag">Home Feed · The daily surface</span>
+      <p class="tagline">"Everything happening, one place."</p>
+      <p>
+        Personalized greeting, a <strong>gradient "What's happening"</strong> headline, stat chips
+        (Upcoming / Pending RSVPs / My Events), filter chips (All / Upcoming / Hosting / Invited / Past),
+        and a vertical card feed. Each card shows cover, title, time, location, guest avatars, and
+        live RSVP status.
+      </p>
+      <h4>Feature depth</h4>
+      <ul>
+        <li><strong>Badge system:</strong> HOST / Private / Public / Recurring / # of Moments / # of Updates — a card tells the full story at a glance.</li>
+        <li><strong>Past events filter</strong> — a scrollable history of where you've been. This is the "ambient memory" hook.</li>
+        <li><strong>AdMob banners every 5th card</strong> — monetization is already wired.</li>
+        <li><strong>Pull-to-refresh + skeleton states</strong> — no jank, no blank screens ever.</li>
+      </ul>
+      <div class="hooks">
+        <h4>Marketing hooks</h4>
+        <ul>
+          <li>"Your social life, finally on one screen."</li>
+          <li>"Stop texting 'wait, is that tonight?' — Populr remembers for you."</li>
+          <li>"The feed that isn't trying to steal your attention. It's trying to give you your weekend back."</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3: Moments -->
+  <div class="showcase">
+    <div class="screen">
+      <img src="../appstore/03_moments.png" alt="Moments grid showing photos and videos from the event, marked NEW" />
+    </div>
+    <div>
+      <span class="tag">Moments · The defensible feature</span>
+      <p class="tagline">"Moments worth reliving."</p>
+      <p>
+        A grid of photos and videos contributed by every attendee, auto-flagged NEW since your last
+        visit, filterable (All / Photos / Videos / Mine). Tap opens a vertical, swipeable
+        full-screen player with reactions, counts, and the uploader's avatar.
+      </p>
+      <h4>Feature depth</h4>
+      <ul>
+        <li><strong>Cloudinary pipeline</strong> — upload, AI moderation, CDN, derived thumbnail URLs. Every media asset gets a device-local thumbnail for instant grid loading.</li>
+        <li><strong>Tiered video prefetch</strong> (4 tiers: event detail → strip → sheet → player look-ahead) — swipes feel instant, not loading-spinner-y.</li>
+        <li><strong>Engagement analytics</strong> — view count, reactions, video completion rate, top uploader. Tracked in PostHog, surfaced in-app as "X views · Y reactions."</li>
+        <li><strong>Organizer moderation queue</strong> — anything flagged sits in a sheet for approve/remove before it's visible to guests.</li>
+      </ul>
+      <div class="hooks">
+        <h4>Marketing hooks</h4>
+        <ul>
+          <li>"It's not a camera roll. It's everyone's camera roll."</li>
+          <li>"The group chat post-event dump, but actually organized."</li>
+          <li>"The memory layer the internet forgot to build."</li>
+          <li><strong>Strong press angle:</strong> shared AI-moderated event albums as a privacy-safe alternative to Instagram Stories.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4: Discover -->
+  <div class="showcase">
+    <div class="screen">
+      <img src="../appstore/04_discover.png" alt="Discover tab with Near You and All Events sections, Ticketmaster events" />
+    </div>
+    <div>
+      <span class="tag">Discover · The growth surface</span>
+      <p class="tagline">"Discover what's near you."</p>
+      <p>
+        Location-aware feed ("Near Dallas, TX"), date filter chips (Today / This Week / This Month / Past),
+        two sections: <strong>Near You</strong> (horizontal scroll of closest concerts, sports, comedy, shows) and
+        <strong>All Events</strong> (vertical cards with distance, venue, affiliate CTAs).
+      </p>
+      <h4>Feature depth</h4>
+      <ul>
+        <li><strong>SerpAPI + Ticketmaster</strong> ingestion via Supabase Edge Functions — real events from real sources, not a shell directory.</li>
+        <li><strong>Interest categories on profile</strong> — the feed is weighted to what you've told us you like (music, comedy, sports, parades, food, fitness…).</li>
+        <li><strong>Affiliate links on every third-party event</strong> — if a user buys a ticket through Populr, we get paid. Revenue is wired, ready to scale.</li>
+        <li><strong>"Weekend Picks" push notifications</strong> — Thursday 10am cron, one push per user with the best weekend event within ~80 km filtered by their interests.</li>
+      </ul>
+      <div class="hooks">
+        <h4>Marketing hooks</h4>
+        <ul>
+          <li>"Your ZIP code just got more interesting."</li>
+          <li>"Tinder for your Friday night." (Careful — sets a casual tone.)</li>
+          <li>"We find the gig. You bring the friends."</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 5: Calendar -->
+  <div class="showcase">
+    <div class="screen">
+      <img src="../appstore/05_calendar.png" alt="Calendar view showing color-coded event dots and agenda list" />
+    </div>
+    <div>
+      <span class="tag">Calendar · The retention surface</span>
+      <p class="tagline">"Your calendar, connected."</p>
+      <p>
+        Full-month grid with colored dots (host / going / maybe / invited), swipe between months,
+        tap any day to drop into an agenda list. Each agenda card carries a left color bar
+        (gradient for HOST, solid for others) and an uppercase RSVP pill.
+      </p>
+      <h4>Feature depth</h4>
+      <ul>
+        <li><strong>Recurring events expansion</strong> — a weekly yoga class renders on every correct date, not just the start date.</li>
+        <li><strong>Unified view across roles</strong> — events you host, events you RSVP'd to, events you were invited to, all in one grid.</li>
+        <li><strong>Pull-to-refresh + error state with retry</strong> — built like a production app, not a prototype.</li>
+      </ul>
+      <div class="hooks">
+        <h4>Marketing hooks</h4>
+        <ul>
+          <li>"Your social calendar finally has the same weight as your work calendar."</li>
+          <li>"Every yellow dot is a decision you haven't made yet."</li>
+          <li>"Populr doesn't just ask if you're coming. It remembers where you've been."</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 6: Create -->
+  <div class="showcase">
+    <div class="screen">
+      <img src="../appstore/06_create.png" alt="Create event wizard step 1 of 3 with single/recurring/series toggle" />
+    </div>
+    <div>
+      <span class="tag">Create Event · The low-friction core</span>
+      <p class="tagline">"Any schedule. Any event."</p>
+      <p>
+        A 3-step wizard: Tell us about your event (name, description, type) → when &amp; where →
+        cover photo &amp; privacy. Event type picker handles the hardest part of most event apps:
+        <strong>single vs. recurring vs. series</strong> — a parade, a weekly yoga class, or a
+        three-night film festival, all modeled correctly.
+      </p>
+      <h4>Feature depth</h4>
+      <ul>
+        <li><strong>React Hook Form + Zod</strong> — every field validated, no "oops, forgot a required field on step 3."</li>
+        <li><strong>Optional affiliate link</strong> behind an accordion — hosts with merch, tickets, or Venmo can monetize their own events.</li>
+        <li><strong>Cover photo from camera roll</strong> with smart crop.</li>
+        <li><strong>Privacy modes:</strong> public, invite-only, private — enforced at the Cloudflare Worker level on shared links.</li>
+      </ul>
+      <div class="hooks">
+        <h4>Marketing hooks</h4>
+        <ul>
+          <li>"From napkin idea to shareable link in 90 seconds."</li>
+          <li>"Recurring events shouldn't mean recurring data entry." (Aimed at community hosts.)</li>
+          <li>"If you've ever Google Form'd a birthday party, we're sorry."</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== HIDDEN FEATURES =============== -->
+<section>
+  <h2><span class="num">03</span>What's under the hood (not in the screenshots)</h2>
+  <p>
+    These features don't get App Store shots but matter for the narrative — especially for
+    press, parents, and policy-minded reviewers.
+  </p>
+
+  <div class="two-col">
+    <div class="block">
+      <h4>Frictionless guest RSVP</h4>
+      <p>
+        Invite links open a branded, animated landing page (Lifemark bloom + Ken Burns hero +
+        confetti) served by Cloudflare Worker. Guests with no account can RSVP via phone + OTP in
+        under 30 seconds. No download wall.
+      </p>
+    </div>
+    <div class="block">
+      <h4>Moderator Protections</h4>
+      <p>
+        A coined umbrella term for our whole content-safety stack: Cloudinary AI Vision on every
+        Moment, organizer approval queues for flagged content, reporting tools, and planned age
+        gates (under-13 blocked, 13–17 sandboxed with parental consent, adult and family accounts).
+        This is a <strong>press angle</strong>, not a backend detail.
+      </p>
+    </div>
+    <div class="block">
+      <h4>Invite lifecycle intelligence</h4>
+      <p>
+        Status badges for every invite: <em>pending · sent · viewed · responded · declined</em>.
+        Organizers see who opened their invite and when — Apple-Mail-style read receipts for
+        parties. Resend, swipe-to-delete, re-invite.
+      </p>
+    </div>
+    <div class="block">
+      <h4>Recurring events done right</h4>
+      <p>
+        Full RRULE-style recurrence: "Going to all" / "Going to this one" / "Can't make it this week."
+        Each occurrence has its own guest list, its own chat, its own Moments. Competitors fake
+        this with duplicated events; we model it.
+      </p>
+    </div>
+    <div class="block">
+      <h4>Cross-platform parity</h4>
+      <p>
+        The same codebase ships to iOS, Web, and (next) Android. The web version is served by
+        Cloudflare Workers with HTMLRewriter-injected OG tags, AdSense, and GA4. Every shareable
+        link has a rich preview on iMessage, Slack, WhatsApp, and Twitter.
+      </p>
+    </div>
+    <div class="block">
+      <h4>Analytics &amp; product intelligence</h4>
+      <p>
+        PostHog on every screen (native) + GA4 on web. Event taxonomy already captures:
+        event_viewed, rsvp_submitted, invite_sent, moment_player_opened, moment_viewed,
+        moment_video_completed, moment_reaction, affiliate_clicked. We can answer launch-week
+        questions from day one.
+      </p>
+    </div>
+    <div class="block">
+      <h4>Engagement-weighted discovery (planned)</h4>
+      <p>
+        Static interest categories evolve into a signal-weighted user profile: views, likes, RSVPs,
+        saves, shares all feed a nightly pg_cron recomputation of per-user category weights. This
+        becomes the ranking layer for Weekend Picks and the "For You" section.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =============== COMPETITIVE =============== -->
+<section>
+  <h2><span class="num">04</span>Competitive landscape</h2>
+  <p>
+    Competitors cluster into three buckets: <strong>invitation tools</strong> (Partiful, Paperless Post),
+    <strong>ticketing platforms</strong> (Eventbrite, Luma, Dice), and <strong>social graphs</strong>
+    (Facebook Events, Meetup). None combine all three with a post-event memory layer.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Populr</th>
+        <th>Partiful</th>
+        <th>Luma</th>
+        <th>Facebook Events</th>
+        <th>Eventbrite</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="brand">Frictionless RSVP (no account)</td>
+        <td class="yes">Yes (phone OTP)</td>
+        <td class="yes">Yes</td>
+        <td class="partial">Email only</td>
+        <td class="no">Account required</td>
+        <td class="yes">Email</td>
+      </tr>
+      <tr>
+        <td class="brand">Local event discovery</td>
+        <td class="yes">Yes · SerpAPI + Ticketmaster</td>
+        <td class="no">No</td>
+        <td class="partial">Web-only</td>
+        <td class="yes">Yes</td>
+        <td class="yes">Yes (paid-only)</td>
+      </tr>
+      <tr>
+        <td class="brand">Recurring / series events</td>
+        <td class="yes">Full model</td>
+        <td class="no">No</td>
+        <td class="partial">Calendar workaround</td>
+        <td class="partial">Clunky</td>
+        <td class="yes">Yes</td>
+      </tr>
+      <tr>
+        <td class="brand">Live group chat per event</td>
+        <td class="yes">Supabase Realtime</td>
+        <td class="no">No</td>
+        <td class="no">No</td>
+        <td class="partial">Comments only</td>
+        <td class="no">No</td>
+      </tr>
+      <tr>
+        <td class="brand">Shared photo / video album</td>
+        <td class="yes"><strong>Moments, AI-moderated</strong></td>
+        <td class="no">No</td>
+        <td class="no">No</td>
+        <td class="partial">FB upload</td>
+        <td class="no">No</td>
+      </tr>
+      <tr>
+        <td class="brand">Unified personal calendar</td>
+        <td class="yes">Host + RSVP + invited</td>
+        <td class="no">No</td>
+        <td class="yes">Host only</td>
+        <td class="no">No</td>
+        <td class="no">No</td>
+      </tr>
+      <tr>
+        <td class="brand">Interest-based recommendations</td>
+        <td class="yes">Weighted, evolving</td>
+        <td class="no">No</td>
+        <td class="no">No</td>
+        <td class="yes">Yes (ad-driven)</td>
+        <td class="partial">Category tags</td>
+      </tr>
+      <tr>
+        <td class="brand">Content moderation at ingest</td>
+        <td class="yes">Cloudinary AI Vision</td>
+        <td class="no">N/A</td>
+        <td class="no">N/A</td>
+        <td class="partial">Reactive only</td>
+        <td class="no">N/A</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>How to position against each</h3>
+  <div class="two-col">
+    <div class="block">
+      <h4>vs. Partiful</h4>
+      <p>
+        Partiful owns the "cool party invite" aesthetic but stops at RSVP. Populr has the same
+        invite vibe and then keeps going — chat, Moments, recurring events, discovery. <strong>"Partiful
+        invites you. Populr keeps the party going."</strong>
+      </p>
+    </div>
+    <div class="block">
+      <h4>vs. Luma</h4>
+      <p>
+        Luma owns tech-meetup calendar culture on web. Populr is mobile-first, social-first, and
+        designed for gatherings that aren't conferences. <strong>"Luma is for your Notion-using
+        coworkers. Populr is for your friends."</strong>
+      </p>
+    </div>
+    <div class="block">
+      <h4>vs. Facebook Events</h4>
+      <p>
+        Facebook Events is a zombie product — declining engagement, no mobile love, no trust with
+        under-35s. Populr is the clean-slate replacement for people who left FB years ago but still
+        need a party RSVP tool. <strong>"The events tab your friends actually open."</strong>
+      </p>
+    </div>
+    <div class="block">
+      <h4>vs. Eventbrite</h4>
+      <p>
+        Eventbrite is built for paid tickets and has no social layer. Populr covers the long tail of
+        free and semi-public events, and links out to Eventbrite / Ticketmaster via affiliate when
+        appropriate. <strong>"We're not fighting them — we're the front door."</strong>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =============== TECH MOAT =============== -->
+<section>
+  <h2><span class="num">05</span>Technical moat</h2>
+  <p>
+    Most of this doesn't matter in consumer copy, but it matters for investor conversations,
+    press on the "how" side, and hiring.
+  </p>
+
+  <div class="two-col">
+    <div class="block">
+      <h4>One codebase, three platforms</h4>
+      <p>
+        Expo SDK 54 + React Native 0.81 + React 19 ships to iOS, Android, and Web from a single
+        TypeScript strict codebase. NativeWind (Tailwind) for styling, no StyleSheet.create. Adds
+        a platform as a <em>marginal</em>, not a <em>step</em> cost.
+      </p>
+    </div>
+    <div class="block">
+      <h4>Supabase as the whole backend</h4>
+      <p>
+        Auth (Apple, Google, phone OTP via Twilio), Postgres with strict RLS on every table,
+        Storage for avatars and thumbnails, Realtime for chat, Edge Functions for SerpAPI and
+        email. No dedicated backend team required.
+      </p>
+    </div>
+    <div class="block">
+      <h4>Cloudflare edge layer</h4>
+      <p>
+        The web version isn't just a PWA — it's a Cloudflare Worker that injects OG tags per
+        event, serves animated invite landings, mediates privacy (public/invite-only/private), and
+        acts as a fallback OG image renderer. First-paint on shared links is sub-100ms globally.
+      </p>
+    </div>
+    <div class="block">
+      <h4>Cloudinary + AI moderation pipeline</h4>
+      <p>
+        Every image or video uploaded to a Moment hits Cloudinary, runs through AI Vision
+        (NSFW / violence / weapons), and only then renders to the feed. Organizers see flagged
+        items in a review queue. This is a full content-safety stack, not a disclaimer on a
+        terms page.
+      </p>
+    </div>
+    <div class="block">
+      <h4>Analytics as a first-class citizen</h4>
+      <p>
+        PostHog (native) + GA4 (web) + affiliate click tracking + AdMob / AdSense. Every revenue
+        event is instrumented. Every engagement event is instrumented. We can measure
+        moment-by-moment from day one.
+      </p>
+    </div>
+    <div class="block">
+      <h4>Testability</h4>
+      <p>
+        testIDs on every interactive element (enforced by CLAUDE.md convention). Jest + React
+        Native Testing Library set up. Maestro and Playwright scaffolds in place for mobile
+        and web end-to-end testing.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =============== MONETIZATION =============== -->
+<section>
+  <h2><span class="num">06</span>Monetization — all wired, most live</h2>
+
+  <div class="stats">
+    <div class="stat">
+      <span class="num">4</span>
+      <span class="label">Revenue streams built</span>
+    </div>
+    <div class="stat">
+      <span class="num">3</span>
+      <span class="label">Already live</span>
+    </div>
+    <div class="stat">
+      <span class="num">$0</span>
+      <span class="label">Net rev today (pre-launch)</span>
+    </div>
+    <div class="stat">
+      <span class="num">100%</span>
+      <span class="label">Instrumented in analytics</span>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="block">
+      <h4>1. AdMob banners (iOS) · AdSense (Web) — Live</h4>
+      <p>
+        Every 5th card in the Home Feed, banner on Event Detail, banner on Public Event page. Zero
+        impact on organizer-created flows. Turned off inside private events by design.
+      </p>
+    </div>
+    <div class="block">
+      <h4>2. Affiliate links on discovered events — Live</h4>
+      <p>
+        Ticketmaster, Eventbrite, SerpAPI-surfaced events all carry affiliate CTAs. Every click
+        tracked. Zero incremental work to add more partners — it's a field on the event model.
+      </p>
+    </div>
+    <div class="block">
+      <h4>3. Host-owned affiliate links — Live</h4>
+      <p>
+        A host can attach their own ticket / Venmo / merch link to any event they create. Clicks
+        tracked. We monetize both sides of the marketplace.
+      </p>
+    </div>
+    <div class="block">
+      <h4>4. Premium subscriptions (RevenueCat) — Wired, hidden</h4>
+      <p>
+        react-native-purchases integrated and tested. Ready to flip on for Pro tier
+        (larger events, custom branding, private Moments retention, advanced analytics). Planned for
+        Sprint 12 / post-launch.
+      </p>
+    </div>
+  </div>
+
+  <div class="callout">
+    The monetization story for launch: <strong>"Revenue starts on day one, compounds on week eight."</strong>
+    Ads + affiliate are live from the moment the App Store flips us on. Subscriptions roll out
+    after we have retention data.
+  </div>
+</section>
+
+<!-- =============== ROADMAP =============== -->
+<section>
+  <h2><span class="num">07</span>Where we are and what's next</h2>
+  <p>
+    We've completed 14 sprints. The app is feature-complete for v1 launch. Remaining launch work
+    is almost entirely non-code: App Store Connect setup, screenshots, privacy labels, age
+    rating, final regression pass.
+  </p>
+
+  <div class="roadmap">
+    <div class="col now">
+      <h4>Shipping now</h4>
+      <ul>
+        <li>Apple Sign In, Google OAuth, Phone OTP</li>
+        <li>Event create / edit / delete (single + recurring + series)</li>
+        <li>RSVP, invitations (link / SMS / email), guest lifecycle</li>
+        <li>Realtime chat, Updates, Potluck, Moments, moderation queue</li>
+        <li>Discover (SerpAPI + Ticketmaster + interest weighting)</li>
+        <li>Calendar (host + RSVP + invited, recurring expansion)</li>
+        <li>Dark theme, web version, Cloudflare Worker, animated invites</li>
+        <li>AdMob + AdSense + affiliate + full analytics</li>
+      </ul>
+    </div>
+    <div class="col next">
+      <h4>Launch-blocking punch list</h4>
+      <ul>
+        <li>Apply migrations 051 / 052 / 053 to Supabase</li>
+        <li>Full regression pass (checklist exists)</li>
+        <li>App Store Connect: bundle ID, certs, screenshots, description</li>
+        <li>Age rating + privacy nutrition labels</li>
+        <li>TestFlight internal round, then App Review submission</li>
+      </ul>
+    </div>
+    <div class="col later">
+      <h4>Post-launch roadmap</h4>
+      <ul>
+        <li>Android port</li>
+        <li>Engagement-weighted recommendation engine (F032)</li>
+        <li>Event Settings · Co-hosting · Calendar Sync (Sprint 11 — done, shipping with v1)</li>
+        <li>Friends · DMs · Profile buildout (Sprint 10 — done)</li>
+        <li>Age-gating &amp; family accounts</li>
+        <li>PostHog moments dashboards</li>
+        <li>RevenueCat Pro tier</li>
+        <li>Vertical swipe feed, global search, QR invites, dual-crop covers</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- =============== SOUND BITES =============== -->
+<section>
+  <h2><span class="num">08</span>Sound bites for copy &amp; pitch</h2>
+
+  <div class="bites">
+    <div class="bite">
+      The only event app that stays useful the morning after.
+      <span class="attr">— Core positioning</span>
+    </div>
+    <div class="bite">
+      It's not a group chat. It's not an invite. It's what happens between.
+      <span class="attr">— Against Partiful / Messages</span>
+    </div>
+    <div class="bite">
+      Your friends remember the party. Populr remembers who was there.
+      <span class="attr">— Memory-layer frame</span>
+    </div>
+    <div class="bite">
+      Populr is the events tab your friends actually open.
+      <span class="attr">— Against Facebook Events</span>
+    </div>
+    <div class="bite">
+      From napkin idea to shareable link in 90 seconds.
+      <span class="attr">— Host-side ease</span>
+    </div>
+    <div class="bite">
+      The memory layer the internet forgot to build.
+      <span class="attr">— Moments as press hook</span>
+    </div>
+    <div class="bite">
+      Every yellow dot on your calendar is a decision you haven't made yet.
+      <span class="attr">— Calendar / retention</span>
+    </div>
+    <div class="bite">
+      Your ZIP code just got more interesting.
+      <span class="attr">— Discover / local hook</span>
+    </div>
+  </div>
+</section>
+
+<!-- =============== DISCUSSION PROMPTS =============== -->
+<section>
+  <h2><span class="num">09</span>Prompts to fuel the marketing discussion</h2>
+  <div class="prompts">
+    <ol>
+      <li>
+        <strong>Lead with hosts or guests?</strong>
+        <span>Hosts are the acquisition lever (they bring guests for free). Guests are the reason the product feels alive. Which persona do we front-load in ads and PR?</span>
+      </li>
+      <li>
+        <strong>Is Moments the star, or the supporting act?</strong>
+        <span>Moments is arguably the most defensible feature we have. But leading with it assumes users already get the event-hosting layer. Do we tease Moments in App Store shot 1 or make it the reveal?</span>
+      </li>
+      <li>
+        <strong>Who do we pitch to press first?</strong>
+        <span>Three viable angles: (a) "Partiful killer for millennials," (b) "Safer social photo-sharing for families," (c) "The end of the Google Calendar social-life split." Pick one.</span>
+      </li>
+      <li>
+        <strong>Launch geography: nationwide or city-by-city?</strong>
+        <span>Discover is only as good as the SerpAPI + Ticketmaster data in a given metro. Dallas (our seed market) is strong. Do we pick 3–5 launch cities and go deep, or open everywhere and lean on organic?</span>
+      </li>
+      <li>
+        <strong>How loud do we go on content moderation?</strong>
+        <span>Moderator Protections is a real, differentiating stack. Leading with it appeals to parents and press; it risks making us sound like a youth-safety product, not a fun one. Decision point.</span>
+      </li>
+      <li>
+        <strong>Price signal on launch day?</strong>
+        <span>The app is free with ads. RevenueCat is wired but hidden. Do we tease a Pro tier in launch copy ("Free forever, Pro coming soon") or stay silent until we have retention data?</span>
+      </li>
+      <li>
+        <strong>What single metric do we pick as the north star for launch month?</strong>
+        <span>Options: events created per user, invites-sent-to-RSVPs-received ratio, Moments uploaded per event, W1 retention. The instrumentation supports any of them. Pick one per marketing sub-team.</span>
+      </li>
+      <li>
+        <strong>What's our "remember this name" moment?</strong>
+        <span>Every launched app has one. Superhuman had the concierge onboarding. Partiful had the vaporwave aesthetic. What's ours? Candidates: the animated invite link, the Moments grid filling up live during a demo, the gradient Lifemark.</span>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- =============== FOOTER =============== -->
+<section style="margin-top: 96px; padding-top: 32px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 13px;">
+  <p>
+    <strong>Populr · Internal launch brief.</strong> Generated 2026-04-22 from codebase, design
+    specs, and sprint completion docs. Screenshots from <code>docs/appstore/</code>. Intended for
+    internal marketing strategy discussion — not for external distribution without review.
+  </p>
+  <p>
+    Source of truth: <code>native/CLAUDE.md</code>, <code>BACKLOG.md</code>, sprint docs in
+    <code>docs/SPRINT_*_COMPLETE.md</code>.
+  </p>
+</section>
+
+</div>
+</body>
+</html>
